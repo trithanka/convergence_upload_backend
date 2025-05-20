@@ -1,0 +1,301 @@
+{
+	"info": {
+		"_postman_id": "7a323bb3-0bd3-465a-86df-5848216c7552",
+		"name": "convergence_upload",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22881528",
+		"_collection_link": "https://job-mela.postman.co/workspace/Convergence~7b41be9a-b518-437e-bc74-492e5228bb15/collection/22881528-7a323bb3-0bd3-465a-86df-5848216c7552?action=share&source=collection_link&creator=22881528"
+	},
+	"item": [
+		{
+			"name": "upload manual",
+			"item": [
+				{
+					"name": "scheme",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"queryType\":\"scheme\",\r\n    \"schemeFundingType\": \"Grant_FT\",\r\n    \"schemeFundingRatio\": 70,\r\n    \"sanctionOrderNo\": \"SO123456\",\r\n    \"dateOfSanction\": \"2023-01-15\",\r\n    \"schemeType\": \"Education ST\",\r\n    \"fundName\": \"National Education Fund\",\r\n    \"scheme\": \"Scholarship Program\",\r\n    \"schemeCode\": \"SP2023\",\r\n    \"fklDepartmentId\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/manual-file-upload",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"manual-file-upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "course",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"queryType\":\"course\",\r\n    \"dtFromDate\": \"2024-01-01\",\r\n    \"dtToDate\": \"2025-12-31\",\r\n    \"fklSectorId\": \"1\",\r\n    \"vsCourseCode\": \"COURSE123\",\r\n    \"vsCourseName\": \"Advanced Programming\",\r\n    \"iTheoryDurationInHours\": 120,\r\n    \"iPracticalDurationInHours\": 80,\r\n    \"fklDepartmentId\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/manual-file-upload",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"manual-file-upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"queryType\":\"TP\",\r\n    \"tpId\": \"1\",\r\n    \"vsTpName\": \"Tech Training Ltd.\",\r\n    \"vsSpocEmail\": \"contactspoc@techtraining.com\",\r\n    \"iSpocContactNum\": \"1234567890\",\r\n    \"vsSpocName\": \"spoc kalyan\",\r\n    \"vsTpCode\": \"SMART001\",\r\n    \"vsState\": \"assam\",\r\n    \"vsDistrict\": \"nagaon\",\r\n    \"vsBlock\": \"Block A\",\r\n    \"vsVillage\": \"TechVille\",\r\n    \"vsAddress\": \"123 Tech Street, Tech City\",\r\n    \"fklDepartmentId\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/manual-file-upload",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"manual-file-upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"queryType\":\"TC\",\r\n    \"tpId\": \"1\",\r\n    \"fklTpCode\": \"1\",\r\n    \"vsTcName\": \"Innovative Learning Center\",\r\n    \"vsTcCode\": \"TC001\",\r\n    \"vsSpocEmail\": \"spoc@innovativecenter.com\",\r\n    \"vsSpocName\": \"spoc biany\",\r\n    \"vsState\": \"assam\",\r\n    \"vsDistrict\": \"ghy\",\r\n    \"vsBlock\": \"Block B\",\r\n    \"vsVillage\": \"vill afa\",\r\n    \"vsAddress\": \"1234 Learning Ave, 101\",\r\n    \"iSpocContactNum\": \"2125550198\",\r\n    \"vsConstituency\": \"Central Manhattan\",\r\n    \"smartId\": \"SMARTTC100\",\r\n    \"fklDepartmentId\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/manual-file-upload",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"manual-file-upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get Data",
+			"item": [
+				{
+					"name": "getscheme",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCourse",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "v eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InBrbExvZ2luSWQiOjEsInZzTG9naW5OYW1lIjoidGVzdDEiLCJ2c1Bhc3N3b3JkIjoiYmJjMTZiZjY0NzExMjIyNjAwMDNhOGM2YTYwODYyYmQiLCJkdGNyZWF0ZWRBdCI6bnVsbCwiZHRVcGRhdGVkQXQiOm51bGwsImJFbmFibGUiOm51bGwsImZrbE1vZGlmaWVkQnlMb2dpbklkIjpudWxsLCJma2xNb2RpZmllZEJ5Um9sZUlkIjpudWxsLCJma2xEZXBhcnRtZW50SWQiOjF9LCJpYXQiOjE3MzExMzYwOTAsImV4cCI6MTczMzcyODA5MH0.adbnFeiw0KOTwNP3K-xcL6uSUc5dmj6n0cczi6g_MpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"queryType\":\"course\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/get-department",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"get-department"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "v eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InBrbExvZ2luSWQiOjEsInZzTG9naW5OYW1lIjoidGVzdDEiLCJ2c1Bhc3N3b3JkIjoiYmJjMTZiZjY0NzExMjIyNjAwMDNhOGM2YTYwODYyYmQiLCJkdGNyZWF0ZWRBdCI6bnVsbCwiZHRVcGRhdGVkQXQiOm51bGwsImJFbmFibGUiOm51bGwsImZrbE1vZGlmaWVkQnlMb2dpbklkIjpudWxsLCJma2xNb2RpZmllZEJ5Um9sZUlkIjpudWxsLCJma2xEZXBhcnRtZW50SWQiOjF9LCJpYXQiOjE3MzExMzYwOTAsImV4cCI6MTczMzcyODA5MH0.adbnFeiw0KOTwNP3K-xcL6uSUc5dmj6n0cczi6g_MpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"queryType\":\"TP\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/get-department",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"get-department"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTC",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "v eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InBrbExvZ2luSWQiOjEsInZzTG9naW5OYW1lIjoidGVzdDEiLCJ2c1Bhc3N3b3JkIjoiYmJjMTZiZjY0NzExMjIyNjAwMDNhOGM2YTYwODYyYmQiLCJkdGNyZWF0ZWRBdCI6bnVsbCwiZHRVcGRhdGVkQXQiOm51bGwsImJFbmFibGUiOm51bGwsImZrbE1vZGlmaWVkQnlMb2dpbklkIjpudWxsLCJma2xNb2RpZmllZEJ5Um9sZUlkIjpudWxsLCJma2xEZXBhcnRtZW50SWQiOjF9LCJpYXQiOjE3MzExMzYwOTAsImV4cCI6MTczMzcyODA5MH0.adbnFeiw0KOTwNP3K-xcL6uSUc5dmj6n0cczi6g_MpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"queryType\":\"TC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://convergence-upload.skillmissionassam.org/nw/get-department",
+							"protocol": "https",
+							"host": [
+								"convergence-upload",
+								"skillmissionassam",
+								"org"
+							],
+							"path": [
+								"nw",
+								"get-department"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\":\"test1\",\r\n    \"password\":\"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://convergence-upload.skillmissionassam.org/nw/department/login",
+					"protocol": "https",
+					"host": [
+						"convergence-upload",
+						"skillmissionassam",
+						"org"
+					],
+					"path": [
+						"nw",
+						"department",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
