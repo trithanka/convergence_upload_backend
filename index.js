@@ -69,6 +69,4 @@ app.listen(PORT, function (err) {
   if (err) {
     return console.error(err);
   }
-
-  //console.log("Started at port" + PORT);
 });
