@@ -389,12 +389,10 @@ updateTarget:`Update nw_convergence_target_dtl set iAvailableTarget =? where pkl
   checkDuplicateCandidate: `SELECT COUNT(*) as count 
                             FROM nw_convergence_candidate_basic_dtl
                             WHERE 
-                            candidateId = ? 
-                            AND fklDepartmentId = ? 
+                            fklDepartmentId = ? 
                             and vsDOB = ? 
                             AND vsCandidateName = ? 
                             AND vsGender = ? 
-                            AND vsMobile = ?
                             AND fklReligionId = ?
                             AND fklCategoryId = ?
                             AND vsEducationAttained = ?

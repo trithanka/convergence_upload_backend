@@ -11,7 +11,7 @@ const batchSchema = Joi.object({
   // fklTpId: Joi.optional(),
   fklTcId: Joi.number().required(),
   // fklTrainerId: Joi.number().required(),
-  iBatchNumber: Joi.number().required(),
+  iBatchNumber: Joi.required(),
   fklDepartmentId: Joi.number().required(),
   queryType: Joi.string().valid('batch').required(),
   fklTargetId:Joi.number().required(),
@@ -37,7 +37,7 @@ const ExcelbatchSchema = Joi.object({
   "End Date": Joi.date().greater(Joi.ref('Start Date')).required(),
   // "Sector": Joi.optional(),
   "Trainer PAN": Joi.required(),
-  "Batch Number": Joi.number().required(),
+  "Batch Number": Joi.string().required(),
   "Target Order Number": Joi.required(),
   "Batch Target": Joi.number().required(),
   "Trainner Name":Joi.string().required()

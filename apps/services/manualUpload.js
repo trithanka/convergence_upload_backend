@@ -466,7 +466,7 @@ exports.handleCandidate = co.wrap(async function (candidateInput, upload_method)
         //check duplicate candidate bduplicateEntry
         let bDuplicateEntry = 0;
         let queryN= query.checkDuplicateCandidate;
-        let params = [value.candidateId, value.fklDepartmentId, value.vsDOB, value.vsCandidateName, value.vsGender,value.vsMobile,value.fklReligionId,value.fklCategoryId,value.vsEducationAttained];
+        let params = [value.fklDepartmentId, value.vsDOB, value.vsCandidateName, value.vsGender,value.fklReligionId,value.fklCategoryId,value.vsEducationAttained];
         
         if (value.batchId){
             queryN += `AND batchId = ?`;
@@ -475,7 +475,7 @@ exports.handleCandidate = co.wrap(async function (candidateInput, upload_method)
         let isDuplicate = await connection.query(mySqlCon, queryN, params);
         //console.log(isDuplicate);
         if (isDuplicate[0].count > 0) {
-            return propagateError(StatusCodes.BAD_REQUEST, "sLoad-40", `Candidate ${value.vsCandidateName}  already exists with Candidate ID ${value.candidateId}, DOB: ${candidateInput.vsDOB}`);
+            return propagateError(StatusCodes.BAD_REQUEST, "sLoad-40", `Candidate ${value.vsCandidateName}  already exists with Candidate DOB: ${candidateInput.vsDOB}`);
         }
         let idType;
         if (value.vsUUID !== undefined) {

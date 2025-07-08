@@ -425,6 +425,7 @@ exports.handleMaster = co.wrap(async function (postParam) {
         "Master data fetched successfully", { result }, "sLoad-200", StatusCodes.OK);
     }else if (postParam.queryType === "qpnosAll") {
       result.qpnosAll = await connection.query(mySqlCon, query.getQPNOSAll, []);
+      console.log(result.qpnosAll, "----result.qpnosAll");
       return propagateResponse(
         "Master data fetched successfully", { result }, "sLoad-200", StatusCodes.OK);
     }else if (postParam.queryType === "getByQpnos") {

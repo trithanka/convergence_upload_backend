@@ -12,7 +12,7 @@ const query = {
   //get QPNOS
   getQPNOS: `SELECT QPNOS,pklBatchId as ID FROM nw_convergence_batch_dtl WHERE fklDepartmentId=?`,
   //get QPNOS
-  getQPNOSAll: `select vsCourseCode from nw_coms_course where bEnabled =1;`,
+  getQPNOSAll: `select vsCourseCode from nw_coms_course where bEnabled =1 group by vsCourseCode asc;`,
   //get batch candidate
   getBatchCandidate: `SELECT  pklBatchId AS id, iBatchNumber FROM nw_convergence_batch_dtl WHERE fklDepartmentId=?`,
   //scheme name master
