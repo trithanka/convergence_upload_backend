@@ -19,9 +19,11 @@ const validateCandidateInput = (input) => {
     vsEmail: Joi.string(),
     vsEducationAttained: Joi.number().valid().required(),
 
+    bDropout: Joi.optional(),
     //assessmest
     bAssessed: Joi.optional(),
     vsResult: Joi.optional(),
+  
 
     //placement
     vsPlacementType: Joi.optional(),

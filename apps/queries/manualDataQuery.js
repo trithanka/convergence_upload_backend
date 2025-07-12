@@ -303,8 +303,10 @@ updateTarget:`Update nw_convergence_target_dtl set iAvailableTarget =? where pkl
                          dtCreatedAt, 
                          iUploadMethod,
                          bDuplicateEntry ,
-                         vsCandidateKey) 
-                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                         vsCandidateKey,
+                         bDropout
+                         ) 
+                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 
   //get candidate basic by id
   getCandidateDetailsBasic: `SELECT * FROM nw_convergence_candidate_basic_dtl WHERE pklCandidateBasicId=?`,

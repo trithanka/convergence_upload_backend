@@ -515,7 +515,8 @@ exports.handleCandidate = co.wrap(async function (candidateInput, upload_method)
             new Date(),
             upload_method,
             bDuplicateEntry,
-            candidateUniqueId
+            candidateUniqueId,
+            value.bDropout
         ]);
 
         // Insert assessment data if available

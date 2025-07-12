@@ -1030,7 +1030,7 @@ exports.handleBatch = co.wrap(async function (postParam, fklDepartmentId) {
     let [filter_query, filter_params] = await filter_service.addFilterService(main_query, query_params, like_params, equal_params, 'batch');
     let [count_filter_query, count_filter_params] = await filter_service.addFilterService(count_query, query_params, like_params, equal_params, 'batch');
     const total_count = await connection.query(mySqlCon, count_filter_query, count_filter_params);
-    filter_query += ` order by batch.dtcreatedAt desc`;
+    filter_query += `group by cand.batchId order by batch.dtcreatedAt desc`;
     filter_query += ` LIMIT ${take} OFFSET ${skip};`;
     const batch = await connection.query(mySqlCon, filter_query, filter_params);
 
@@ -1686,7 +1686,7 @@ exports.handleCandidate = co.wrap(async function (postParam, fklDepartmentId) {
       count_query = query.countAllCandidate;
       query_params.push(fklDepartmentId);
       column_name = 'cand.vsCandidateName';
-      batch_column = 'cand.batchId'
+      batch_column = 'batch.iBatchNumber'
       candidate_id_column = 'cand.candidateId';
       gender_column = 'cand.vsGender';
       mobile_column = 'cand.vsMobile';
@@ -1697,21 +1697,21 @@ exports.handleCandidate = co.wrap(async function (postParam, fklDepartmentId) {
       count_query += ` AND ${column_name} LIKE ?`;
       query_params.push(`%${postParam.vsCandidateName}%`)
     }
-    // if (postParam.batchId) {
-    //   main_query += ` AND ${batch_column} = ?`;
-    //   count_query += ` AND ${batch_column} = ?`;
-    //   query_params.push(`${postParam.batchId}`)
-    // }
+    if (postParam.batchId) {
+      main_query += ` AND ${batch_column} = ?`;
+      count_query += ` AND ${batch_column} = ?`;
+      query_params.push(`${postParam.batchId}`)
+    }
     if (postParam.candidateId && dept_sort_name != "ASDM") {
       main_query += ` AND ${candidate_id_column} = ?`;
       count_query += ` AND ${candidate_id_column} = ?`;
       query_params.push(`${postParam.candidateId}`)
     }
-    // if (postParam.gender) {
-    //   main_query += ` AND ${gender_column} = ?`;
-    //   count_query += ` AND ${gender_column} = ?`;
-    //   query_params.push(`${postParam.gender}`)
-    // }
+    if (postParam.gender) {
+      main_query += ` AND ${gender_column} = ?`;
+      count_query += ` AND ${gender_column} = ?`;
+      query_params.push(`${postParam.gender}`)
+    }
     if (postParam.mobile) {
       main_query += ` AND ${mobile_column} LIKE ?`;
       count_query += ` AND ${mobile_column} LIKE ?`;
@@ -1725,7 +1725,6 @@ exports.handleCandidate = co.wrap(async function (postParam, fklDepartmentId) {
     // main_query += ` GROUP BY cand.pklCandidateBasicId`;
 
     main_query += ` ORDER BY id DESC`;
-
     const total_candidate = await connection.query(mySqlCon, count_query, query_params);
 //console.log("Main Query ",main_query);
     main_query += ` LIMIT ${take} OFFSET ${skip};`;

@@ -106,10 +106,11 @@ batch.dtcreatedAt,
 tc.vsTcName AS tcName,
 tc.vsAddress AS tcAddress,
 course.vsCourseName,
-target.vsTargetNo
-
+target.vsTargetNo,
+count(cand.batchId) as totalCandidate
 FROM nw_convergence_batch_dtl AS batch
 LEFT JOIN nw_convergence_tc_dtl tc ON tc.pklTcId = batch.fklTcId
+left join nw_convergence_candidate_basic_dtl cand on cand.batchId = batch.pklBatchId 
 LEFT JOIN nw_convergence_course_dtl AS course ON course.pklCourseId = batch.fklCourseId
 LEFT JOIN nw_convergence_target_dtl AS target ON target.pklTargetId = batch.fklTargetId
 WHERE batch.fklDepartmentId= ? `,
@@ -250,8 +251,21 @@ WHERE target.fklDepartmentId = ?`,
   // ---- END OLD CODE 30-04-2025 --------
 
   //candidate count
-  countAllCandidate: `SELECT COUNT(candidateId) as count 
-                       FROM nw_convergence_candidate_basic_dtl as cand WHERE fklDepartmentId = ?`,
+  countAllCandidate: ` SELECT COUNT(*) as count
+FROM nw_convergence_candidate_basic_dtl cand
+LEFT JOIN nw_mams_gender gender on gender.pklGenderId = cand.vsGender
+LEFT JOIN nw_mams_religion religion on religion.pklReligionId = cand.fklReligionId
+LEFT JOIN nw_mams_caste caste ON caste.pklCasteId = cand.fklCategoryId
+LEFT JOIN nw_mams_qualification qual ON qual.pklQualificationId = cand.vsEducationAttained
+LEFT JOIN nw_convergence_batch_dtl batch ON batch.pklBatchId = cand.batchId
+LEFT JOIN nw_convergence_course_dtl course ON course.pklCourseId = batch.fklCourseId
+LEFT JOIN nw_convergence_tc_dtl tc ON tc.pklTcId = batch.fklTcId
+LEFT JOIN nw_convergence_tp_dtl tp ON tp.pklTpId = tc.fklTpId
+LEFT JOIN nw_convergence_sector_master_dtl sector ON sector.pklSectorId = batch.fklSectorId
+LEFT JOIN nw_convergence_placement_dtl place ON place.candidateId = cand.pklCandidateBasicId
+LEFT JOIN nw_convergence_assessement_dtl AS assesment ON  assesment.batchId= batch.pklBatchId
+LEFT JOIN nw_convergence_department_master dept ON dept.pklDepartmentId = cand.fklDepartmentId
+WHERE cand.fklDepartmentId = ? `,
   getAllHTSHCandidate: `SELECT htss.pklLegacyDataId as pklCandidateBasicId,htss.vsCandidateID as candidateId,htss.vsAge as iAge,htss.vsGender as pklGenderId,htss.vsCandidateName,htss.vsMobileNo as vsMobile,htss.vsEducationAttained as pklQualificationId ,htss.candidateDOB as vsDOB FROM nw_legacy_dtl_handloom_textile_sericulture_sericulture as htss`,
   getAllHTSHCandidateCount: `SELECT COUNT(*) as count FROM nw_legacy_dtl_handloom_textile_sericulture_sericulture`,
   getAllNulmCandidate: `SELECT nulm.pklLegacyDataId as pklCandidateBasicId,nulm.vsCandidateID as candidateId,nulm.vsAge as iAge,nulm.vsGender as pklGenderId,nulm.vsCandidateName,nulm.vsMobileNo as vsMobile,nulm.vsEducationAttained as pklQualificationId,nulm.candidateDOB as vsDOB FROM nw_legacy_dtl_nulm as nulm`,
