@@ -145,6 +145,7 @@ const candidateSchema = Joi.object({
   "Is Candidate Placed":Joi.optional(),
   "Result":Joi.optional(),
   "Placement Type":Joi.optional(),
+  "Dropout":Joi.optional()
 });
 
 const validateCandidate = (data) => {

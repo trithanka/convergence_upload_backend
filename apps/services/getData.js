@@ -1092,18 +1092,20 @@ exports.handleTarget = co.wrap(async function (postParam, fklDepartmentId) {
     // Fetch all schemes
     let like_params = {
       vsTargetNo: postParam.vsTargetNo,
-      dtTargetDate: postParam.dtTargetDate
+      dtTargetDate: postParam.dtTargetDate,
+      vsSchemeCode: postParam.vsSchemeCode
     };
     let equal_params = {
-      vsSchemeCode: postParam.vsSchemeCode,
+      // vsSchemeCode: postParam.vsSchemeCode,
     };
-    main_query += ` order by dtCreatedAt desc`;
+    // main_query += ` order by dtCreatedAt desc`;
     // ------------ where with like -----------------
     let [filter_query, filter_params] = await filter_service.addFilterService(main_query, query_params, like_params, equal_params, 'target');
     let [count_filter_query, count_filter_params] = await filter_service.addFilterService(count_query, query_params, like_params, equal_params, 'target');
     count_filter_query += ` order by dtCreatedAt desc`;
     const total_count = await connection.query(mySqlCon, count_filter_query, count_filter_params);
     filter_query += ` LIMIT ${take} OFFSET ${skip};`;
+
     const targets = await connection.query(mySqlCon, filter_query, filter_params);
 
     //separating bDuplicateEntry by 0 or 1

@@ -33,7 +33,7 @@ const { Console } = require("winston/lib/winston/transports");
 const parseDateString = (dateStr) => {
   // Remove any leading/trailing whitespace
   dateStr = dateStr.trim();
-  
+
   // Check if date contains '/' or '-'
   const separator = dateStr.includes('/') ? '/' : '-';
   const parts = dateStr.split(separator);
@@ -184,74 +184,74 @@ exports.processExcelFile = async function (
         };
       }
       break;
-      case "report":
-        try {
-          const transformedItems = [];
-          const validationErrors = [];
-          let rowNumber = 1;
-  
-          for (const item of data) {
-            try {
-              const transformedItem = {
-                vsSchemeName: item["Scheme Name"],
-                dtFinancialYear: item["Financial Year"],
-                iTotalJobRoleCount: item["Job Role Count"],
-                // itotalTrainingCandidate: item["Total Candidate Count"],
-                itotalCertifiedCandidate: item["Total Certified Candidate"],
-                itotalPlacedCandidate: item["Total Placed Candidate"],
-                itotalTarget: item["Total Target"],
-                iMaleCount: item["Male Candidate Count"],
-                iFemaleCount: item["Female Candidate Count"],
-                // iOtherCount: item["Other Candidate Count"],
-                iScCount: item["SC Candidate Count"],
-                iStHCount: item["ST Candidate Count"],
-                iObcCount: item["OBC Candidate Count"],
-                iGeneralCount: item["General Candidate Count"],
-                iMinorityCount: item["Minority Candidate Count"],
-                iTeaTribeCount: item["Tea Tribe Candidate Count"],
-                iPwdCount: item["PwD Candidate Count"],
-                iOtherCount: item["Other Candidate Count"],
-                totalCount: item["Total Candidate Count"],
-                // schemeCode: item["Scheme Code"],
-                fklDepartmentId: fklDepartmentId,
-                // queryType: "scheme",
-                rowNumber: rowNumber
-              };
-  
-              const validationResult = validateCandidate.validateConvergence(item);
-              if (validationResult.error) {
-                throw new Error(`Validation failed: ${validationResult.error.message}`);
-              }
-  
-              transformedItems.push(transformedItem);
-            } catch (err) {
-              validationErrors.push({ error: err.message, rowNumber: rowNumber });
+    case "report":
+      try {
+        const transformedItems = [];
+        const validationErrors = [];
+        let rowNumber = 1;
+
+        for (const item of data) {
+          try {
+            const transformedItem = {
+              vsSchemeName: item["Scheme Name"],
+              dtFinancialYear: item["Financial Year"],
+              iTotalJobRoleCount: item["Job Role Count"],
+              // itotalTrainingCandidate: item["Total Candidate Count"],
+              itotalCertifiedCandidate: item["Total Certified Candidate"],
+              itotalPlacedCandidate: item["Total Placed Candidate"],
+              itotalTarget: item["Total Target"],
+              iMaleCount: item["Male Candidate Count"],
+              iFemaleCount: item["Female Candidate Count"],
+              // iOtherCount: item["Other Candidate Count"],
+              iScCount: item["SC Candidate Count"],
+              iStHCount: item["ST Candidate Count"],
+              iObcCount: item["OBC Candidate Count"],
+              iGeneralCount: item["General Candidate Count"],
+              iMinorityCount: item["Minority Candidate Count"],
+              iTeaTribeCount: item["Tea Tribe Candidate Count"],
+              iPwdCount: item["PwD Candidate Count"],
+              iOtherCount: item["Other Candidate Count"],
+              totalCount: item["Total Candidate Count"],
+              // schemeCode: item["Scheme Code"],
+              fklDepartmentId: fklDepartmentId,
+              // queryType: "scheme",
+              rowNumber: rowNumber
+            };
+
+            const validationResult = validateCandidate.validateConvergence(item);
+            if (validationResult.error) {
+              throw new Error(`Validation failed: ${validationResult.error.message}`);
             }
-            rowNumber++;
+
+            transformedItems.push(transformedItem);
+          } catch (err) {
+            validationErrors.push({ error: err.message, rowNumber: rowNumber });
           }
-  
-          let insertedRow = 0;
-          for (const transformedItem of transformedItems) {
-            const response = await handleConvergence(transformedItem, 2,fklDepartmentId);
-            if (response.success === false) {
-              // Use the rowNumber stored in the transformedItem
-              validationErrors.push({ error: response.message, rowNumber: transformedItem.rowNumber });
-            } else {
-              insertedRow++;
-            }
-          }
-          // //console.log("insertedRow----", insertedRow);
-          // //console.log("validationErrors----", validationErrors);
-          responses.push({ insertedRow: insertedRow });
-          responses.push({ error: validationErrors });
-        } catch (error) {
-          //console.log("error", error);
-          return {
-            success: false,
-            message: error.message,
-          };
+          rowNumber++;
         }
-        break;
+
+        let insertedRow = 0;
+        for (const transformedItem of transformedItems) {
+          const response = await handleConvergence(transformedItem, 2, fklDepartmentId);
+          if (response.success === false) {
+            // Use the rowNumber stored in the transformedItem
+            validationErrors.push({ error: response.message, rowNumber: transformedItem.rowNumber });
+          } else {
+            insertedRow++;
+          }
+        }
+        // //console.log("insertedRow----", insertedRow);
+        // //console.log("validationErrors----", validationErrors);
+        responses.push({ insertedRow: insertedRow });
+        responses.push({ error: validationErrors });
+      } catch (error) {
+        //console.log("error", error);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      break;
     case "course":
       try {
         const transformedItems = [];
@@ -277,7 +277,7 @@ exports.processExcelFile = async function (
             if (!sectorId) {
               throw new Error(`Sector ID not found for sector name: ${sectorName}`);
             }
-            let queryQpnos =`select course.vsCourseName , sector.vsSectorName ,config.dtFromDate, config.dtToDate
+            let queryQpnos = `select course.vsCourseName , sector.vsSectorName ,config.dtFromDate, config.dtToDate
                             from nw_coms_course course 
                             left join nw_coms_course_config config on course.pklCourseId = config.fklCourseId
                             left join nw_coms_sector sector on sector.pklSectorId = course.fklSectorId
@@ -289,18 +289,18 @@ exports.processExcelFile = async function (
               return propagateError(StatusCodes.INTERNAL_SERVER_ERROR, "sLoad-40", "DB connection failed");
             }
 
-            if(item["QPNOS Code"] !== undefined){
-                  //check if qpnos match with the course name , sector name and validation date by checking db
-                const qpnos =  await connection.query(mySqlCon, queryQpnos, [item["QPNOS Code"], sectorName, formattedFromDate, formattedToDate, item["Course Name"]]);
-                // console.log("qpnos---", qpnos);
-                // console.log("qpnos length---", qpnos.length);
-                if (qpnos.length === 0) {
-                  console.error("qpnos not found for course name: ", item["Course Name"], "sector name: ", sectorName, "validation date: ", formattedFromDate);
-                  throw new Error(`QPNOS not found for course name: ${item["Course Name"]}, sector name: ${sectorName} and validation date: ${formattedFromDate}`);
-                }
+            if (item["QPNOS Code"] !== undefined) {
+              //check if qpnos match with the course name , sector name and validation date by checking db
+              const qpnos = await connection.query(mySqlCon, queryQpnos, [item["QPNOS Code"], sectorName, formattedFromDate, formattedToDate, item["Course Name"]]);
+              // console.log("qpnos---", qpnos);
+              // console.log("qpnos length---", qpnos.length);
+              if (qpnos.length === 0) {
+                console.error("qpnos not found for course name: ", item["Course Name"], "sector name: ", sectorName, "validation date: ", formattedFromDate);
+                throw new Error(`QPNOS not found for course name: ${item["Course Name"]}, sector name: ${sectorName} and validation date: ${formattedFromDate}`);
+              }
             }
-            
-           
+
+
             const transformedItem = {
               vsCourseName: item["Course Name"],
               vsCourseCode: item["QPNOS Code"],
@@ -323,7 +323,7 @@ exports.processExcelFile = async function (
             transformedItems.push(transformedItem);
           } catch (err) {
             validationErrors.push({ error: err.message, rowNumber: rowNumber });
-          }finally{
+          } finally {
             mySqlCon?.release();
           }
           rowNumber++;
@@ -359,9 +359,9 @@ exports.processExcelFile = async function (
             let sectionDate;
             //if type is batch Based then format
             if (item["Target Type"] === "Batch Based") {
-            
+
               const targetDate = item["Target Date"];
-            
+
               if (typeof targetDate === 'number') {
                 // Excel serial date
                 sectionDate = excelSerialDateToDate(targetDate);
@@ -379,15 +379,15 @@ exports.processExcelFile = async function (
               } else {
                 throw new Error(`Invalid date format for Batch Based target: ${targetDate}`);
               }
-            
+
             } else {
               // For non-Batch Based, allow direct Date object
-              
-                sectionDate = item["Target Date"];
-              
+
+              sectionDate = item["Target Date"];
+
             }
 
-            
+
             const target_type_id = await convertToInt("target_type", item["Target Type"]);
             if (!target_type_id) {
               throw new Error(`Target Type ID not found for Target Type: ${item["Target Type"]}`);
@@ -485,7 +485,7 @@ exports.processExcelFile = async function (
               fklDepartmentId: fklDepartmentId,
               queryType: "TP",
 
-            // ----- START OLD CODE BEFORE 29-04-2025 --------------
+              // ----- START OLD CODE BEFORE 29-04-2025 --------------
 
               // vsTpCode: item["TP Code"],
               // vsSpocEmail: item["Spoc Email"],
@@ -497,12 +497,12 @@ exports.processExcelFile = async function (
               // vsVillage: item["Village"],
               // vsCity: item["City"],
               // vsSpocName: item["Spoc Name"],
-              
+
               // vsSmartId: item["Smart ID"],
               // isVillageCity: item["City or Village"],
 
               // ----- END OLD CODE BEFORE 29-04-2025 --------------
-              
+
               rowNumber: rowNumber // store original row number here
             };
             const validationResult = tpValidator.validateTp(item);
@@ -566,7 +566,7 @@ exports.processExcelFile = async function (
             // let blockId = isVillage ? await convertToInt("block", item["Block"]) : 0;
             // let assemblyC = item["Assembly Constituency"] ? await convertToInt("Assessmbly", item["Assembly Constituency"]) : 0;
             // let LokSabhaC = item["Lok Sabha Constituency"] ? await convertToInt("LokSabha", item["Lok Sabha Constituency"]) : 0;
-            
+
             // if (blockId === null) {
             //   throw new Error(`Block ID not found .`);
             // }
@@ -576,7 +576,7 @@ exports.processExcelFile = async function (
             const stateId = await convertToInt("state", item["State"]);
             const districtId = await convertToInt("district", item["District"]);
             const tpid = await convertToInt("TP", item["TP Name"])
-            
+
             if (!tpid) {
               throw new Error(`Tp Name not found for ${item["TP Name"]}`);
             }
@@ -602,7 +602,7 @@ exports.processExcelFile = async function (
               fklDepartmentId: fklDepartmentId,
               queryType: "TC",
 
-            // ---- START OLD CODE 29-04-2025 --------------
+              // ---- START OLD CODE 29-04-2025 --------------
 
               // vsTcCode: item["TC Code"],
               // vsTcCode: item["Center Code"],
@@ -619,7 +619,7 @@ exports.processExcelFile = async function (
               // fklLoksabhaConstituencyId: LokSabhaC,
 
               // ---- END OLD CODE 29-04-2025 --------------
-              
+
               rowNumber: rowNumber // store original row number here
             };
             const validationResult = tcValidator.validateTc(item);
@@ -718,9 +718,9 @@ exports.processExcelFile = async function (
               dtStartDate: formattedStartDate,
               dtEndDate: formattedEndDate,
               iBatchTarget: item["Batch Target"],
-              vsPAN:item['Trainer PAN'],
+              vsPAN: item['Trainer PAN'],
               fklTargetId: pklTargetId,
-              vsTrainerName:item['Trainner Name'],
+              vsTrainerName: item['Trainner Name'],
               queryType: "batch",
               fklDepartmentId: fklDepartmentId,
 
@@ -733,7 +733,7 @@ exports.processExcelFile = async function (
               // fklSectorId: sectorId,
 
               // ----- END OLD CODE 30-04-2025 ------
-              
+
               rowNumber: rowNumber // store original row number here
             };
 
@@ -812,7 +812,7 @@ exports.processExcelFile = async function (
             }
             //check batch id and candidate id
             const queryBatch = await connection.query(mySqlCon, `Select count(pklCandidateBasicId) as count from nw_convergence_candidate_basic_dtl where candidateId = ? and fklDepartmentId=? and batchId=?`, [item["Candidate ID"], fklDepartmentId, fklBatchId]);
-            
+
             if (queryBatch[0].count === 0) {
               throw new Error(`Candidate is not part of the batch ${item["Batch ID"]}`);
             }
@@ -1003,7 +1003,7 @@ exports.processExcelFile = async function (
               vsPAN: item['PAN'],
               QPNOS: item['QPNOS Code'],
               fklBatchId: null,
-              fklCourseId:fklCourseId,
+              fklCourseId: fklCourseId,
               rowNumber: rowNumber // store original row number here
             };
 
@@ -1110,22 +1110,22 @@ exports.processExcelFile = async function (
           try {
             const invoiceDate = excelSerialDateToDate(item["Invoice Date"]);
             const formattedInvoiceDate = formatDateToMySQL(invoiceDate);
-            
+
             const tcId = await convertToInt("tc", item["Trainning Center"]);
             if (tcId == null) {
               throw new Error(`Trainng ID not found for given name: ${item["Trainning Center"]}`);
             }
-            
+
             const batchId = await convertToInt("batch", item["Batch Number"]);
             if (batchId == null) {
               throw new Error(`Batch ID not found for given name: ${item["Batch Number"]}`);
             }
-            
+
             const invoiceTypeId = await convertToInt("invoice type", item["Invoice Type"]);
             if (invoiceTypeId == null) {
               throw new Error(`Invoice Type not found for given name: ${item["Batch Number"]} It should be "First Installment (Training Invoice)" or "Second Installment(Training Invoice)" or "Third Installment (Training Invoice)" or "Hostel Invoice"`);
             }
-            
+
             const transformedItem = {
               fklTcId: tcId,
               fklInvoiceType: invoiceTypeId,
@@ -1225,16 +1225,18 @@ exports.processExcelFile = async function (
             const minority = item["Minority"] === "yes" ? 1 : 0;
             const isAssessmentComplete = item["Is Assessment Complete"] === "yes" ? 1 : 0;
             const isCandidatePlaced = item["Is Candidate Placed"] === "yes" ? 1 : 0;
+            const bDropout = item["Dropout"] === "Yes" ? 1 : 0;
+
 
             // Batch ID validation
             let fklBatchId;
-            if (item["Batch ID"] !== undefined){
+            if (item["Batch ID"] !== undefined) {
               fklBatchId = await convertToInt("batch", item["Batch ID"]);
               if (!fklBatchId) {
                 throw new Error(`Batch not found for Batch Number : ${item["Batch ID"]}`);
               }
             }
-            
+
             // Save the current rowNumber in the transformed object
 
             const transformedItem = {
@@ -1250,13 +1252,14 @@ exports.processExcelFile = async function (
               bTeaTribe: teaTribe,
               bBPLcardHolder: bplCardHolder,
               bMinority: minority,
-              bAssessed:isAssessmentComplete,
-              vsResult:item['Result'],
-              placed:isCandidatePlaced,
-              vsPlacementType:item['Placement Type'],
+              bAssessed: isAssessmentComplete,
+              vsResult: item['Result'],
+              placed: isCandidatePlaced,
+              vsPlacementType: item['Placement Type'],
               fklDepartmentId: fklDepartmentId,
               queryType: "candidate",
-              rowNumber: rowNumber // store original row number here
+              rowNumber: rowNumber, // store original row number here,
+              bDropout:bDropout
             };
 
             // --- START OLD CODE 30-04-2025 --------

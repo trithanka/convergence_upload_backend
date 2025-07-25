@@ -135,25 +135,30 @@ WHERE target.fklDepartmentId = ?`,
                     WHERE cand.fklDepartmentId = ? `,
 
   completeAllCandidateDetailsQ: `
-                    SELECT cand.pklCandidateBasicId AS id,cand.vsCandidateKey,cand.vsCandidateKey, cand.fklDepartmentId AS departmentId, cand.candidateId AS candidateId, 
+                    SELECT cand.pklCandidateBasicId AS id,
+                    CASE WHEN cand.bDropout = 1 THEN 'YES'
+                    WHEN cand.bDropout = 0 THEN 'NO'
+                    ELSE ''
+                    END AS dropout,
+                    cand.vsCandidateKey,cand.vsCandidateKey, cand.fklDepartmentId AS departmentId, cand.candidateId AS candidateId, 
                     cand.vsCandidateName AS vsCandidateName, cand.vsDOB AS vsDOB, cand.vsFatherName,cand.vsGender, gender.vsGenderName,cand.vsEducationAttained, 
                     cand.vsUUID AS UUID, religion.vsReligionName AS religion, 
                     caste.vsCasteName AS caste,  qual.vsQualification,
                                                 CASE WHEN cand.bDisability = 1 THEN 'YES' 
                                                 WHEN cand.bDisability = 0 THEN 'NO'
-                                                ELSE 'N/A'
+                                                ELSE ''
                                                 END AS disability,
                                                 CASE WHEN cand.bTeaTribe = 1 THEN 'YES' 
                                                 WHEN cand.bTeaTribe = 0 THEN 'NO'
-                                                ELSE 'N/A'
+                                                ELSE ''
                                                 END AS teaTribe,
                                                 CASE WHEN cand.bBPLcardHolder = 1 THEN 'YES' 
                                                 WHEN cand.bBPLcardHolder = 0 THEN 'NO'
-                                                ELSE 'N/A'
+                                                ELSE ''
                                                 END AS BPLcardHolder,
                                                 CASE WHEN cand.bMinority = 1 THEN 'YES' 
                                                 WHEN cand.bMinority = 0 THEN 'NO'
-                                                ELSE 'N/A'
+                                                ELSE ''
                                                 END AS Minority,
                                                 batch.iBatchNumber AS batchNo, batch.dtStartDate AS startDate, batch.dtEndDate AS endDate,
                                                 course.vsCourseName AS courseName,
