@@ -84,6 +84,20 @@ Router.post("/getSchemeById", (req, res) => {
     });
 });
 
+//get candidate by candidate id
+Router.post("/getCandidateById", (req, res) => {
+    let result;
+    const fklDepartmentId = req.user.user.fklDepartmentId;
+    const candidateId = req.body.candidateId;
+    result = service.getCandidateById(req.body, fklDepartmentId, candidateId);
+    result.then(response => {
+        res.send(response);
+    }).catch(error => {
+        console.error(error);
+        res.status(500).send(error);
+    });
+});
+
 //**view target by scheme id    */
 Router.post("/viewTargetBySchemeId", (req, res) => {
     let result;

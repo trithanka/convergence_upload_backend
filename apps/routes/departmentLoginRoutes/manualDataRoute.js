@@ -68,4 +68,17 @@ Router.post("/", (req, res) => {
     });
 });
 
+Router.post("/update", async (req, res) => {
+    try {
+        
+        const iUploadMethod = req.headers.origin?.startsWith(allowedDomain) ? 1 : 3;
+        const response = await service.updateService(req.body, iUploadMethod); 
+        res.status(200).json(response); 
+    } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).json({ message: "Failed to update", error: error.message });
+    }
+});
+  
+
 module.exports = Router;

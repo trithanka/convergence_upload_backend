@@ -1546,6 +1546,37 @@ exports.getSchemeById = co.wrap(async function (postParam, fklDepartmentId, sche
 });
 
 //****************************************************************************************************************** */
+//get candidate by candidate id
+exports.getCandidateById = co.wrap(async function (postParam, fklDepartmentId, candidateId) {
+  let mySqlCon = null;
+
+  try {
+    mySqlCon = await connection.getDB();
+    //check user
+    const user = await connection.query(mySqlCon, query.checkUser, [fklDepartmentId,]);
+
+    if (user.length === 0) {
+      return propagateError(StatusCodes.BAD_REQUEST, "sLoad-401", "Invalid department id");
+    }
+    // Fetch candidate by candidate id
+    const candidate = await connection.query(mySqlCon, query.getCandidateById, [fklDepartmentId, candidateId,]);
+
+    if (candidate.length === 0) {
+      return propagateError(StatusCodes.BAD_REQUEST, "sLoad-401", "No candidate found");
+    }
+
+    return propagateResponse("Candidate fetched successfully", candidate, "sLoad-200", StatusCodes.OK);
+
+  } catch (error) {
+    console.error("Error in getCandidateById:", error);
+    throw propagateError(StatusCodes.INTERNAL_SERVER_ERROR, "sLoad-500", error.message
+    );
+  } finally {
+    if (mySqlCon) mySqlCon.release();
+  }
+});
+
+//****************************************************************************************************************** */ 
 //* view target by scheme id */
 exports.viewTargetBySchemeId = co.wrap(async function (postParam, fklDepartmentId, schemeId) {
   let mySqlCon = null;

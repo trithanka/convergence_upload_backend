@@ -1,4 +1,57 @@
 const query = {
+    getCandidateById: `SELECT cand.pklCandidateBasicId AS id,
+                    CASE WHEN cand.bDropout = 1 THEN 'YES'
+                    WHEN cand.bDropout = 0 THEN 'NO'
+                    ELSE ''
+                    END AS dropout,
+                    cand.vsCandidateKey, cand.fklDepartmentId AS departmentId, cand.candidateId AS candidateId, 
+                    cand.vsCandidateName AS vsCandidateName, cand.vsDOB AS vsDOB, cand.vsFatherName,cand.vsGender, gender.vsGenderName,cand.vsEducationAttained, 
+                    cand.vsUUID AS UUID, religion.vsReligionName AS religion, 
+                    caste.vsCasteName AS caste,  qual.vsQualification,
+                                                CASE WHEN cand.bDisability = 1 THEN 'YES' 
+                                                WHEN cand.bDisability = 0 THEN 'NO'
+                                                ELSE ''
+                                                END AS disability,
+                                                CASE WHEN cand.bTeaTribe = 1 THEN 'YES' 
+                                                WHEN cand.bTeaTribe = 0 THEN 'NO'
+                                                ELSE ''
+                                                END AS teaTribe,
+                                                CASE WHEN cand.bBPLcardHolder = 1 THEN 'YES' 
+                                                WHEN cand.bBPLcardHolder = 0 THEN 'NO'
+                                                ELSE ''
+                                                END AS BPLcardHolder,
+                                                CASE WHEN cand.bMinority = 1 THEN 'YES' 
+                                                WHEN cand.bMinority = 0 THEN 'NO'
+                                                ELSE ''
+                                                END AS Minority,
+                                                batch.iBatchNumber AS batchNo, batch.dtStartDate AS startDate, batch.dtEndDate AS endDate,
+                                                course.vsCourseName AS courseName,
+                                               tc.vsTcName AS TC, tc.vsAddress AS tcAddress,
+                                               dept.vsDepartmentName ,
+                                               tp.vsTpName AS TP,
+                                               tp.vsAddress AS tpAddress,
+                                               sector.vsSectorName AS sector,
+                                               CASE WHEN place.bIsCandidatePlaced = 1 THEN 'YES'
+                                                   WHEN place.bIsCandidatePlaced = 0 THEN 'NO'
+                                                   ELSE 'N/A' END AS candidatePlaced,
+                                                   place.vsPlacementType AS placementType,
+                                                   assesment.vsResult,
+                                                   assesment.bAssessed as assessmentComplete
+                               
+                FROM nw_convergence_candidate_basic_dtl cand
+                LEFT JOIN nw_mams_gender gender on gender.pklGenderId = cand.vsGender
+                LEFT JOIN nw_mams_religion religion on religion.pklReligionId = cand.fklReligionId
+                LEFT JOIN nw_mams_caste caste ON caste.pklCasteId = cand.fklCategoryId
+                LEFT JOIN nw_mams_qualification qual ON qual.pklQualificationId = cand.vsEducationAttained
+                LEFT JOIN nw_convergence_batch_dtl batch ON batch.pklBatchId = cand.batchId
+                LEFT JOIN nw_convergence_course_dtl course ON course.pklCourseId = batch.fklCourseId
+                LEFT JOIN nw_convergence_tc_dtl tc ON tc.pklTcId = batch.fklTcId
+                LEFT JOIN nw_convergence_tp_dtl tp ON tp.pklTpId = tc.fklTpId
+                LEFT JOIN nw_convergence_sector_master_dtl sector ON sector.pklSectorId = batch.fklSectorId
+                LEFT JOIN nw_convergence_placement_dtl place ON place.candidateId = cand.pklCandidateBasicId
+                LEFT JOIN nw_convergence_assessement_dtl AS assesment ON  assesment.batchId= batch.pklBatchId
+                LEFT JOIN nw_convergence_department_master dept ON dept.pklDepartmentId = cand.fklDepartmentId
+                WHERE cand.fklDepartmentId = ? AND cand.pklCandidateBasicId = ?;`,
     
   getByQpnos: `select course.vsCourseName , sector.vsSectorName ,sector.pklSectorId,date_format(config.dtFromDate, '%y-%m-%d') as dtFromDate , date_format(config.dtToDate, '%y-%m-%d') as dtToDate
             from nw_coms_course course 

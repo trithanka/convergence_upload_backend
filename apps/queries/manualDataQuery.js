@@ -429,6 +429,19 @@ updateTarget:`Update nw_convergence_target_dtl set iAvailableTarget =? where pkl
   getCandIDbyPKL:`SELECT candidateId FROM nw_convergence_candidate_basic_dtl WHERE pklCandidateBasicId= ? AND fklDepartmentId = ?`,
   getBatchIDbyPKL:`SELECT iBatchNumber FROM nw_convergence_batch_dtl WHERE pklBatchId= ? AND fklDepartmentId = ?`,
 
+  // Update queries for candidate, assessment, and placement
+  updateCandidateDropout: `UPDATE nw_convergence_candidate_basic_dtl 
+                          SET bDropout = ?, dtUpdatedAt = ? 
+                          WHERE pklCandidateBasicId = ? `,
+
+  updateAssessment: `UPDATE nw_convergence_assessement_dtl 
+                     SET bAssessed = ?, vsResult = ?, dtUpdatedAt = ? 
+                     WHERE candidateId = ? AND batchId = ?`,
+
+  updatePlacement: `UPDATE nw_convergence_placement_dtl 
+                    SET bIsCandidatePlaced = ?, vsPlacementType = ?, dtUpdatedAt = ? 
+                    WHERE candidateId = ? AND batchId = ?`,
+
 };
 
 

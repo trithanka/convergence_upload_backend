@@ -31,5 +31,4 @@ router.post("/validate-token", jwtValidator,(req,res)=>{
 
 
 
-
 module.exports = router;

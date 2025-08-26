@@ -988,3 +988,155 @@ exports.handleSector = co.wrap(async function (sectorInput, upload_method) {
         }
     }
 });
+
+
+// Update services for candidate, assessment, and placement
+// Unified update service for candidate, assessment, and placement
+exports.updateService = co.wrap(async function(payload, upload_method) {
+    let mySqlCon = null;
+    let updateResults = {
+        candidate: { updated: false, affectedRows: 0, action: null },
+        assessment: { updated: false, affectedRows: 0, action: null },
+        placement: { updated: false, affectedRows: 0, action: null }
+    };
+
+    try {
+        mySqlCon = await connection.getDB();
+        
+        // // Validate basic required fields
+        // if (!payload.fklDepartmentId) {
+        //     return propagateError(
+        //         StatusCodes.BAD_REQUEST, "sLoad-401", "Missing required field: fklDepartmentId"
+        //     );
+        // }
+
+        // Update candidate dropout if provided   Is Dropout ?
+        if (payload.candidateBasicId !== undefined && payload.bDropout !== undefined) {
+            const candidateResult = await connection.query(mySqlCon, query.updateCandidateDropout, [
+                payload.bDropout,
+                new Date(),
+                payload.candidateBasicId
+            ]);
+            updateResults.candidate.updated = true;
+            updateResults.candidate.affectedRows = candidateResult.affectedRows;
+            updateResults.candidate.action = 'updated';
+        }
+
+        // Handle assessment - check if exists then update, else insert
+        if (payload.candidateBasicId && payload.batchId && 
+            payload.bAssessed !== undefined && payload.vsResult) {
+            
+            // Check if assessment record exists
+            const existingAssessment = await connection.query(mySqlCon, query.checkDuplicateAssessment, [
+                payload.candidateBasicId, 
+                payload.batchId, 
+                payload.fklDepartmentId
+            ]);
+            
+            if (existingAssessment[0].count > 0) {
+                // Update existing assessment
+                const assessmentResult = await connection.query(mySqlCon, query.updateAssessment, [
+                    payload.bAssessed, //Is Assessment Complete ?
+                    payload.vsResult, //Result
+                    new Date(),
+                    payload.candidateBasicId,
+                    payload.batchId
+                ]);
+                updateResults.assessment.updated = true;
+                updateResults.assessment.affectedRows = assessmentResult.affectedRows;
+                updateResults.assessment.action = 'updated';
+            } else {
+                // Insert new assessment
+                const assessmentResult = await connection.query(mySqlCon, query.insertAssesment, [
+                    payload.fklDepartmentId,
+                    payload.batchId,
+                    payload.candidateBasicId,
+                    payload.bAssessed,
+                    payload.vsResult,
+                    new Date(),
+                    upload_method
+                ]);
+                updateResults.assessment.updated = true;
+                updateResults.assessment.affectedRows = 1;
+                updateResults.assessment.action = 'inserted';
+            }
+        }
+
+        // Handle placement - check if exists then update, else insert
+        if (payload.candidateBasicId && payload.batchId && 
+            payload.placed !== undefined && payload.vsPlacementType) {
+            
+            // Check if placement record exists
+            const existingPlacement = await connection.query(mySqlCon, query.checkBatchCandPklDup, [
+                payload.candidateBasicId
+            ]);
+            
+            if (existingPlacement[0].count > 0) {
+                // Update existing placement
+                const placementResult = await connection.query(mySqlCon, query.updatePlacement, [
+                    payload.placed, //Is Candidate Placed ?
+                    payload.vsPlacementType, //Placement Type
+                    new Date(),
+                    payload.candidateBasicId,
+                    payload.batchId
+                ]);
+                updateResults.placement.updated = true;
+                updateResults.placement.affectedRows = placementResult.affectedRows;
+                updateResults.placement.action = 'updated';
+            } else {
+                // Insert new placement
+                const placementResult = await connection.query(mySqlCon, query.insertPlacement, [
+                    payload.fklDepartmentId,
+                    payload.batchId,
+                    payload.candidateBasicId,
+                    payload.placed,
+                    payload.vsPlacementType,
+                    new Date(),
+                    upload_method
+                ]);
+                updateResults.placement.updated = true;
+                updateResults.placement.affectedRows = 1;
+                updateResults.placement.action = 'inserted';
+            }
+        }
+
+        // Check if any updates were performed
+        const totalUpdates = updateResults.candidate.updated + updateResults.assessment.updated + updateResults.placement.updated;
+        
+        if (totalUpdates === 0) {
+            return propagateError(
+                StatusCodes.BAD_REQUEST, "sLoad-401", "No valid update data provided. Please provide candidate, assessment, or placement data."
+            );
+        }
+
+        // Create a more descriptive response message
+        let responseMessage = "Data processed successfully";
+        let actions = [];
+        
+        if (updateResults.candidate.updated) {
+            actions.push("candidate dropout updated");
+        }
+        if (updateResults.assessment.updated) {
+            actions.push(`assessment ${updateResults.assessment.action}`);
+        }
+        if (updateResults.placement.updated) {
+            actions.push(`placement ${updateResults.placement.action}`);
+        }
+        
+        if (actions.length > 0) {
+            responseMessage = `Data processed successfully: ${actions.join(', ')}`;
+        }
+
+        return propagateResponse(
+            responseMessage, updateResults, "sLoad-200", StatusCodes.OK
+        );
+
+    } catch (error) {
+        console.error("Error in updateService:", error);
+        return propagateError(StatusCodes.INTERNAL_SERVER_ERROR, "sLoad-500", error.message);
+    } finally {
+        if (mySqlCon) {
+            mySqlCon.release();
+        }
+    }
+});
