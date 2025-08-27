@@ -14,7 +14,7 @@ router.use('/master', getDepartmentRoute );
 
 //manual upload route
 const manualFileUploadRoute = require("./manualDataRoute");
-router.use('/manual-file-upload',manualFileUploadRoute );
+router.use('/manual-file-upload',jwtValidator,manualFileUploadRoute );
 
 //excel upload route
 const fileUploadRoute = require("./fileUploadRoute");

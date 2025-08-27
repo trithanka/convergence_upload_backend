@@ -70,9 +70,12 @@ Router.post("/", (req, res) => {
 
 Router.post("/update", async (req, res) => {
     try {
-        
-        const iUploadMethod = req.headers.origin?.startsWith(allowedDomain) ? 1 : 3;
-        const response = await service.updateService(req.body, iUploadMethod); 
+        const fklDepartmentId = req.user.user.fklDepartmentId;
+        if(!fklDepartmentId){
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const iUploadMethod = 1;
+        const response = await service.updateService(req.body, iUploadMethod, fklDepartmentId); 
         res.status(200).json(response); 
     } catch (error) {
         console.error("Update error:", error);

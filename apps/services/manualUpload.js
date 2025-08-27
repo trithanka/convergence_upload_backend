@@ -992,13 +992,14 @@ exports.handleSector = co.wrap(async function (sectorInput, upload_method) {
 
 // Update services for candidate, assessment, and placement
 // Unified update service for candidate, assessment, and placement
-exports.updateService = co.wrap(async function(payload, upload_method) {
+exports.updateService = co.wrap(async function(payload, upload_method, fklDepartmentId) {
     let mySqlCon = null;
     let updateResults = {
         candidate: { updated: false, affectedRows: 0, action: null },
         assessment: { updated: false, affectedRows: 0, action: null },
         placement: { updated: false, affectedRows: 0, action: null }
     };
+    console.log("payload", fklDepartmentId);
 
     try {
         mySqlCon = await connection.getDB();
@@ -1010,12 +1011,14 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
         //     );
         // }
 
-        // Update candidate dropout if provided   Is Dropout ?
+        // Update candidate dropout if provided  and batchId Is Dropout ?
         if (payload.candidateBasicId !== undefined && payload.bDropout !== undefined) {
             const candidateResult = await connection.query(mySqlCon, query.updateCandidateDropout, [
                 payload.bDropout,
                 new Date(),
-                payload.candidateBasicId
+                payload.batchId,
+                payload.candidateBasicId,
+                fklDepartmentId
             ]);
             updateResults.candidate.updated = true;
             updateResults.candidate.affectedRows = candidateResult.affectedRows;
@@ -1030,7 +1033,7 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
             const existingAssessment = await connection.query(mySqlCon, query.checkDuplicateAssessment, [
                 payload.candidateBasicId, 
                 payload.batchId, 
-                payload.fklDepartmentId
+                fklDepartmentId
             ]);
             
             if (existingAssessment[0].count > 0) {
@@ -1040,7 +1043,8 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
                     payload.vsResult, //Result
                     new Date(),
                     payload.candidateBasicId,
-                    payload.batchId
+                    payload.batchId,
+                    fklDepartmentId
                 ]);
                 updateResults.assessment.updated = true;
                 updateResults.assessment.affectedRows = assessmentResult.affectedRows;
@@ -1048,7 +1052,7 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
             } else {
                 // Insert new assessment
                 const assessmentResult = await connection.query(mySqlCon, query.insertAssesment, [
-                    payload.fklDepartmentId,
+                    fklDepartmentId,
                     payload.batchId,
                     payload.candidateBasicId,
                     payload.bAssessed,
@@ -1078,7 +1082,8 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
                     payload.vsPlacementType, //Placement Type
                     new Date(),
                     payload.candidateBasicId,
-                    payload.batchId
+                    payload.batchId,
+                    fklDepartmentId
                 ]);
                 updateResults.placement.updated = true;
                 updateResults.placement.affectedRows = placementResult.affectedRows;
@@ -1086,7 +1091,7 @@ exports.updateService = co.wrap(async function(payload, upload_method) {
             } else {
                 // Insert new placement
                 const placementResult = await connection.query(mySqlCon, query.insertPlacement, [
-                    payload.fklDepartmentId,
+                    fklDepartmentId,
                     payload.batchId,
                     payload.candidateBasicId,
                     payload.placed,

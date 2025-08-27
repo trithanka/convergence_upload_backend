@@ -431,16 +431,16 @@ updateTarget:`Update nw_convergence_target_dtl set iAvailableTarget =? where pkl
 
   // Update queries for candidate, assessment, and placement
   updateCandidateDropout: `UPDATE nw_convergence_candidate_basic_dtl 
-                          SET bDropout = ?, dtUpdatedAt = ? 
-                          WHERE pklCandidateBasicId = ? `,
+                          SET bDropout = ?, dtUpdatedAt = ? , batchId = ?
+                          WHERE pklCandidateBasicId = ? AND fklDepartmentId = ?`,
 
   updateAssessment: `UPDATE nw_convergence_assessement_dtl 
                      SET bAssessed = ?, vsResult = ?, dtUpdatedAt = ? 
-                     WHERE candidateId = ? AND batchId = ?`,
+                     WHERE candidateId = ? AND batchId = ? AND fklDepartmentId = ?`,
 
   updatePlacement: `UPDATE nw_convergence_placement_dtl 
                     SET bIsCandidatePlaced = ?, vsPlacementType = ?, dtUpdatedAt = ? 
-                    WHERE candidateId = ? AND batchId = ?`,
+                    WHERE candidateId = ? AND batchId = ? AND fklDepartmentId = ?`,
 
 };
 
